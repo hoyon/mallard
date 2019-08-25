@@ -22,7 +22,6 @@ class MallardApplication: public M::Platform::Application {
         void keyPressEvent(KeyEvent& event) override;
 
         Scene3D _scene;
-        Object3D* _cameraObject;
         M::SceneGraph::Camera3D* _camera;
         M::SceneGraph::DrawableGroup3D _drawables;
 
@@ -45,14 +44,17 @@ MallardApplication::MallardApplication(const Arguments& arguments)
 
     using namespace M::Math::Literals;
 
-    _cameraObject = new Object3D{&_scene};
-    _cameraObject->translate(M::Vector3::zAxis(50.0f));
-    _camera = new M::SceneGraph::Camera3D{*_cameraObject};
-    _camera->setAspectRatioPolicy(M::SceneGraph::AspectRatioPolicy::Extend)
-        .setProjectionMatrix(M::Matrix4::perspectiveProjection(35.0_degf, 16.0f/9.0f, 0.001f, 100.0f))
-        .setViewport(M::GL::defaultFramebuffer.viewport().size());
+    auto& cameraObject = _scene.addChild<Object3D>();
+    cameraObject.translate(M::Vector3::zAxis(50.0f));
 
-    Object3D& cube = _scene.addChild<Object3D>();
+    auto& camera = cameraObject.addFeature<M::SceneGraph::Camera3D>();
+    camera.setAspectRatioPolicy(M::SceneGraph::AspectRatioPolicy::Extend)
+          .setProjectionMatrix(M::Matrix4::perspectiveProjection(35.0_degf, 16.0f/9.0f, 0.001f, 100.0f))
+          .setViewport(M::GL::defaultFramebuffer.viewport().size());
+
+    _camera = &camera;
+
+    auto& cube = _scene.addChild<Object3D>();
     cube.addFeature<Cube>(&_drawables);
 
     _cube = &cube;
