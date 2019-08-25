@@ -11,9 +11,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_BUILD_TYPE Debug)
 
 if (MSVC)
-  add_compile_options(/W4 /WX)
+  add_compile_options(/W4)
 else()
-  add_compile_options(-Wall -Wextra -pedantic -Werror)
+  add_compile_options(-Wall -Wextra -pedantic)
 endif()
 
 find_package(Magnum REQUIRED
@@ -23,6 +23,7 @@ find_package(Magnum REQUIRED
   Shaders
   Trade
   TgaImporter
+  SceneGraph
   Sdl2Application)
 
 find_package(SDL2)
@@ -44,6 +45,7 @@ target_link_libraries(mallard PRIVATE
     Magnum::Primitives
     Magnum::Trade
     Magnum::TgaImporter
+    Magnum::SceneGraph
     Magnum::Shaders)
 
 install(TARGETS mallard DESTINATION ${MAGNUM_BINARY_INSTALL_DIR})
