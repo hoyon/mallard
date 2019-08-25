@@ -1,0 +1,7 @@
+#!/bin/sh
+
+if [ ! -d "build" ]; then
+    cmake -S . -B build -G Ninja -DCMAKE_TOOLCHAIN_FILE=/usr/share/vcpkg/scripts/buildsystems/vcpkg.cmake
+fi
+
+cmake --build build
