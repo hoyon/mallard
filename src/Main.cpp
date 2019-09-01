@@ -1,47 +1,49 @@
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/GL/Renderer.h>
-#include <Magnum/Platform/Sdl2Application.h>
 #include <Magnum/Math/Color.h>
 #include <Magnum/Math/Functions.h>
-#include <Magnum/SceneGraph/Scene.h>
-#include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/Platform/Sdl2Application.h>
 #include <Magnum/SceneGraph/Camera.h>
 #include <Magnum/SceneGraph/Drawable.h>
+#include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/Scene.h>
 
-#include "Scene.h"
+#include "Camera.h"
 #include "Cube.h"
 #include "Ground.h"
-#include "Camera.h"
+#include "Scene.h"
 
 namespace M = Magnum;
 
-class MallardApplication: public M::Platform::Application {
+class MallardApplication : public M::Platform::Application
+{
 
-    public:
-        explicit MallardApplication(const Arguments& arguments);
+public:
+    explicit MallardApplication(const Arguments& arguments);
 
-    private:
-        void drawEvent() override;
-        void tickEvent() override;
-        void keyPressEvent(KeyEvent& event) override;
-        void keyReleaseEvent(KeyEvent& event) override;
-        void viewportEvent(ViewportEvent& event) override;
+private:
+    void drawEvent() override;
+    void tickEvent() override;
+    void keyPressEvent(KeyEvent& event) override;
+    void keyReleaseEvent(KeyEvent& event) override;
+    void viewportEvent(ViewportEvent& event) override;
 
-        Scene3D _scene;
-        Camera* _camera;
-        M::SceneGraph::DrawableGroup3D _drawables;
+    Scene3D _scene;
+    Camera* _camera;
+    M::SceneGraph::DrawableGroup3D _drawables;
 
-        Object3D* _cube;
+    Object3D* _cube;
 };
 
-namespace {
-    auto windowConfiguration()
-    {
-        return M::Platform::Application::Configuration{}
-            .setTitle("Mallard")
-            .setSize({1280, 720});
-    }
+namespace
+{
+auto windowConfiguration()
+{
+    return M::Platform::Application::Configuration{}
+        .setTitle("Mallard")
+        .setSize({1280, 720});
 }
+} // namespace
 
 MallardApplication::MallardApplication(const Arguments& arguments)
     : M::Platform::Application{arguments, windowConfiguration()}
@@ -81,7 +83,6 @@ void MallardApplication::keyPressEvent(KeyEvent& event)
 
         default:
             break;
-
     }
 
     _camera->keyPressed(event.key());

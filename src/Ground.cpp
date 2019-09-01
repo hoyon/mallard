@@ -2,8 +2,8 @@
 
 #include <Magnum/MeshTools/Compile.h>
 #include <Magnum/Primitives/Plane.h>
-#include <Magnum/Trade/MeshData3D.h>
 #include <Magnum/SceneGraph/Camera.h>
+#include <Magnum/Trade/MeshData3D.h>
 
 Ground::Ground(M::SceneGraph::AbstractObject3D& object, M::SceneGraph::DrawableGroup3D* group)
     : M::SceneGraph::Drawable3D{object, group}

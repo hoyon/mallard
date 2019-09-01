@@ -1,9 +1,9 @@
 #ifndef MALLARD_SCENE_H
 #define MALLARD_SCENE_H
 
-#include <Magnum/SceneGraph/Scene.h>
-#include <Magnum/SceneGraph/Object.h>
 #include <Magnum/SceneGraph/MatrixTransformation3D.h>
+#include <Magnum/SceneGraph/Object.h>
+#include <Magnum/SceneGraph/Scene.h>
 
 namespace M = Magnum;
 

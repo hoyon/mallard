@@ -15,33 +15,29 @@ Camera::Camera(Object3D* object)
     _cameraFeature = &addFeature<M::SceneGraph::Camera3D>();
 
     _cameraFeature->setAspectRatioPolicy(M::SceneGraph::AspectRatioPolicy::Extend)
-        .setProjectionMatrix(M::Matrix4::perspectiveProjection(35.0_degf, 16.0f/9.0f, 0.001f, 100.0f))
+        .setProjectionMatrix(M::Matrix4::perspectiveProjection(35.0_degf, 16.0f / 9.0f, 0.001f, 100.0f))
         .setViewport(M::GL::defaultFramebuffer.viewport().size());
 }
 
 void Camera::keyPressed(M::Platform::Sdl2Application::KeyEvent::Key key)
 {
     switch (key) {
-        case M::Platform::Sdl2Application::KeyEvent::Key::W:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::W: {
             _upPressed = true;
             break;
         }
 
-        case M::Platform::Sdl2Application::KeyEvent::Key::S:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::S: {
             _downPressed = true;
             break;
         }
 
-        case M::Platform::Sdl2Application::KeyEvent::Key::D:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::D: {
             _leftPressed = true;
             break;
         }
 
-        case M::Platform::Sdl2Application::KeyEvent::Key::A:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::A: {
             _rightPressed = true;
             break;
         }
@@ -54,26 +50,22 @@ void Camera::keyPressed(M::Platform::Sdl2Application::KeyEvent::Key key)
 void Camera::keyReleased(M::Platform::Sdl2Application::KeyEvent::Key key)
 {
     switch (key) {
-        case M::Platform::Sdl2Application::KeyEvent::Key::W:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::W: {
             _upPressed = false;
             break;
         }
 
-        case M::Platform::Sdl2Application::KeyEvent::Key::S:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::S: {
             _downPressed = false;
             break;
         }
 
-        case M::Platform::Sdl2Application::KeyEvent::Key::D:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::D: {
             _leftPressed = false;
             break;
         }
 
-        case M::Platform::Sdl2Application::KeyEvent::Key::A:
-        {
+        case M::Platform::Sdl2Application::KeyEvent::Key::A: {
             _rightPressed = false;
             break;
         }
@@ -96,23 +88,19 @@ static void decelerateElement(float& elem)
 
 void Camera::tick()
 {
-    if (_upPressed)
-    {
+    if (_upPressed) {
         _velocity.y() += CameraAcceleration;
     }
 
-    if (_downPressed)
-    {
+    if (_downPressed) {
         _velocity.y() -= CameraAcceleration;
     }
 
-    if (_leftPressed)
-    {
+    if (_leftPressed) {
         _velocity.x() += CameraAcceleration;
     }
 
-    if (_rightPressed)
-    {
+    if (_rightPressed) {
         _velocity.x() -= CameraAcceleration;
     }
 
