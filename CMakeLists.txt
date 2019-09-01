@@ -35,6 +35,7 @@ set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 add_executable(mallard
   src/Main.cpp
   src/Ground.cpp
+  src/Camera.cpp
   )
 
 target_compile_features(mallard PUBLIC cxx_std_17)
