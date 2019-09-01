@@ -28,16 +28,20 @@ find_package(Magnum REQUIRED
 
 find_package(SDL2)
 
+find_package(EnTT CONFIG REQUIRED)
+
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_executable(mallard
   src/Main.cpp
+  src/Ground.cpp
   )
 
 target_compile_features(mallard PUBLIC cxx_std_17)
 
 target_link_libraries(mallard PRIVATE
     SDL2
+    EnTT
     Magnum::Application
     Magnum::GL
     Magnum::Magnum
