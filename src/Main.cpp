@@ -25,6 +25,7 @@ class MallardApplication: public M::Platform::Application {
         void tickEvent() override;
         void keyPressEvent(KeyEvent& event) override;
         void keyReleaseEvent(KeyEvent& event) override;
+        void viewportEvent(ViewportEvent& event) override;
 
         Scene3D _scene;
         Camera* _camera;
@@ -98,6 +99,11 @@ void MallardApplication::keyReleaseEvent(KeyEvent& event)
 void MallardApplication::tickEvent()
 {
     _camera->tick();
+}
+
+void MallardApplication::viewportEvent(ViewportEvent& event)
+{
+    M::GL::defaultFramebuffer.setViewport({{}, event.framebufferSize()});
 }
 
 MAGNUM_APPLICATION_MAIN(MallardApplication)
