@@ -17,7 +17,6 @@ namespace M = Magnum;
 
 class MallardApplication : public M::Platform::Application
 {
-
 public:
     explicit MallardApplication(const Arguments& arguments);
 
@@ -85,7 +84,9 @@ void MallardApplication::keyPressEvent(KeyEvent& event)
             break;
     }
 
-    _camera->keyPressed(event.key());
+    if (!event.isRepeated()) {
+        _camera->keyPressed(event.key());
+    }
 
     event.setAccepted();
 }

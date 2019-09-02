@@ -4,13 +4,14 @@
 const float CameraAcceleration = 0.3f;
 const float CameraDeceleration = 0.1f;
 const float MaxVelocity = 1.f;
+const float MaxPosition = 10.f;
 
 Camera::Camera(Object3D* object)
     : Object3D(object)
 {
     using namespace M::Math::Literals;
 
-    translate(M::Vector3::zAxis(50.0f));
+    this->translate(M::Vector3::zAxis(50.0f));
 
     _cameraFeature = &addFeature<M::SceneGraph::Camera3D>();
 
@@ -107,10 +108,20 @@ void Camera::tick()
     decelerateElement(_velocity.x());
     decelerateElement(_velocity.y());
 
+    // clamp velocity
     _velocity.x() = M::Math::clamp(_velocity.x(), -MaxVelocity, MaxVelocity);
     _velocity.y() = M::Math::clamp(_velocity.y(), -MaxVelocity, MaxVelocity);
 
-    translate(_velocity);
+    this->translate(_velocity);
+
+    // clamp position
+    auto transformation = this->transformation();
+    auto& translation = transformation.translation();
+
+    translation.x() = M::Math::clamp(translation.x(), -MaxPosition, MaxPosition);
+    translation.y() = M::Math::clamp(translation.y(), -MaxPosition, MaxPosition);
+
+    this->setTransformation(transformation);
 }
 
 void Camera::draw(M::SceneGraph::DrawableGroup3D& drawables)
