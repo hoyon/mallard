@@ -20,6 +20,9 @@ public:
     void draw(M::SceneGraph::DrawableGroup3D& drawables);
 
 private:
+    void tickPosition();
+    void tickAngle();
+
     M::SceneGraph::Camera3D* _cameraFeature;
 
     M::Vector3 _velocity;
@@ -28,6 +31,11 @@ private:
     bool _downPressed{false};
     bool _leftPressed{false};
     bool _rightPressed{false};
+
+    bool _angleUpPressed{false};
+    bool _angleDownPressed{false};
+    bool _angleLeftPressed{false};
+    bool _angleRightPressed{false};
 };
 
 #endif // MALLARD_CAMERA_H

@@ -4,7 +4,7 @@
 const float CameraAcceleration = 0.3f;
 const float CameraDeceleration = 0.1f;
 const float MaxVelocity = 1.f;
-const float MaxPosition = 10.f;
+const float MaxPosition = 100.f;
 
 Camera::Camera(Object3D* object)
     : Object3D(object)
@@ -43,6 +43,26 @@ void Camera::keyPressed(M::Platform::Sdl2Application::KeyEvent::Key key)
             break;
         }
 
+        case M::Platform::Sdl2Application::KeyEvent::Key::Up: {
+            _angleUpPressed = true;
+            break;
+        }
+
+        case M::Platform::Sdl2Application::KeyEvent::Key::Down: {
+            _angleDownPressed = true;
+            break;
+        }
+
+        case M::Platform::Sdl2Application::KeyEvent::Key::Left: {
+            _angleLeftPressed = true;
+            break;
+        }
+
+        case M::Platform::Sdl2Application::KeyEvent::Key::Right: {
+            _angleRightPressed = true;
+            break;
+        }
+
         default:
             break;
     }
@@ -71,6 +91,26 @@ void Camera::keyReleased(M::Platform::Sdl2Application::KeyEvent::Key key)
             break;
         }
 
+        case M::Platform::Sdl2Application::KeyEvent::Key::Up: {
+            _angleUpPressed = false;
+            break;
+        }
+
+        case M::Platform::Sdl2Application::KeyEvent::Key::Down: {
+            _angleDownPressed = false;
+            break;
+        }
+
+        case M::Platform::Sdl2Application::KeyEvent::Key::Left: {
+            _angleLeftPressed = false;
+            break;
+        }
+
+        case M::Platform::Sdl2Application::KeyEvent::Key::Right: {
+            _angleRightPressed = false;
+            break;
+        }
+
         default:
             break;
     }
@@ -87,7 +127,7 @@ static void decelerateElement(float& elem)
     }
 }
 
-void Camera::tick()
+void Camera::tickPosition()
 {
     if (_upPressed) {
         _velocity.y() += CameraAcceleration;
@@ -112,7 +152,7 @@ void Camera::tick()
     _velocity.x() = M::Math::clamp(_velocity.x(), -MaxVelocity, MaxVelocity);
     _velocity.y() = M::Math::clamp(_velocity.y(), -MaxVelocity, MaxVelocity);
 
-    this->translate(_velocity);
+    this->translateLocal(_velocity);
 
     // clamp position
     auto transformation = this->transformation();
@@ -122,6 +162,35 @@ void Camera::tick()
     translation.y() = M::Math::clamp(translation.y(), -MaxPosition, MaxPosition);
 
     this->setTransformation(transformation);
+}
+
+void Camera::tickAngle()
+{
+    using namespace M::Math::Literals;
+
+    if (_angleUpPressed) {
+        this->rotateXLocal(1.0_degf);
+        this->translate(M::Vector3::zAxis(-0.5f));
+    }
+
+    if (_angleDownPressed) {
+        this->rotateXLocal(-1.0_degf);
+        this->translate(M::Vector3::zAxis(0.5f));
+    }
+
+    if (_angleLeftPressed) {
+        this->rotateZLocal(-1.0_degf);
+    }
+
+    if (_angleRightPressed) {
+        this->rotateZLocal(1.0_degf);
+    }
+}
+
+void Camera::tick()
+{
+    tickPosition();
+    tickAngle();
 }
 
 void Camera::draw(M::SceneGraph::DrawableGroup3D& drawables)
