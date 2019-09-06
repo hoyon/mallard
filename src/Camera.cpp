@@ -1,4 +1,6 @@
 #include "Camera.h"
+#include "Debug/Debug.h"
+#include <Corrade/Utility/Format.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 
 const float CameraAcceleration = 0.3f;
@@ -147,6 +149,8 @@ void Camera::tickPosition()
 
     decelerateElement(_velocity.x());
     decelerateElement(_velocity.y());
+
+    Debug::get().putMessage(M::Utility::formatString("{}", _velocity.x()));
 
     // clamp velocity
     _velocity.x() = M::Math::clamp(_velocity.x(), -MaxVelocity, MaxVelocity);

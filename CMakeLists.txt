@@ -24,7 +24,12 @@ find_package(Magnum REQUIRED
   Trade
   TgaImporter
   SceneGraph
-  Sdl2Application)
+  Sdl2Application
+  )
+
+find_package(MagnumPlugins REQUIRED
+  FreeTypeFont
+  )
 
 find_package(SDL2)
 
@@ -36,6 +41,7 @@ add_executable(mallard
   src/Main.cpp
   src/Ground.cpp
   src/Camera.cpp
+  src/Debug/Debug.cpp
   )
 
 target_compile_features(mallard PUBLIC cxx_std_17)
@@ -51,6 +57,11 @@ target_link_libraries(mallard PRIVATE
     Magnum::Trade
     Magnum::TgaImporter
     Magnum::SceneGraph
-    Magnum::Shaders)
+    Magnum::Shaders
+    MagnumPlugins::FreeTypeFont
+    z
+    png
+    bz2
+    )
 
 install(TARGETS mallard DESTINATION ${MAGNUM_BINARY_INSTALL_DIR})

@@ -10,6 +10,7 @@
 
 #include "Camera.h"
 #include "Cube.h"
+#include "Debug/Debug.h"
 #include "Ground.h"
 #include "Scene.h"
 
@@ -50,7 +51,9 @@ MallardApplication::MallardApplication(const Arguments& arguments)
     M::GL::Renderer::enable(M::GL::Renderer::Feature::DepthTest);
     M::GL::Renderer::enable(M::GL::Renderer::Feature::FaceCulling);
 
-    using namespace M::Math::Literals;
+    M::GL::Renderer::enable(M::GL::Renderer::Feature::Blending);
+    M::GL::Renderer::setBlendFunction(M::GL::Renderer::BlendFunction::SourceAlpha, M::GL::Renderer::BlendFunction::OneMinusSourceAlpha);
+    M::GL::Renderer::setBlendEquation(M::GL::Renderer::BlendEquation::Add, M::GL::Renderer::BlendEquation::Add);
 
     _camera = &_scene.addChild<Camera>();
 
@@ -61,6 +64,8 @@ MallardApplication::MallardApplication(const Arguments& arguments)
 
     auto& groundObject = _scene.addChild<Object3D>();
     groundObject.addFeature<Ground>(&_drawables);
+
+    Debug::get();
 }
 
 void MallardApplication::drawEvent()
@@ -68,6 +73,8 @@ void MallardApplication::drawEvent()
     M::GL::defaultFramebuffer.clear(M::GL::FramebufferClear::Color | M::GL::FramebufferClear::Depth);
 
     _camera->draw(_drawables);
+
+    Debug::get().draw();
 
     swapBuffers();
     redraw();
