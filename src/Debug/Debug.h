@@ -2,6 +2,7 @@
 #define MALLARD_DEBUG_H
 
 #include <string>
+#include <vector>
 
 #include <Corrade/PluginManager/Manager.h>
 #include <Magnum/Shaders/DistanceFieldVector.h>
@@ -23,7 +24,7 @@ public:
 
     void draw();
 
-    void putMessage(const std::string& message);
+    void addMessage(const std::string& message);
 
 private:
     Debug();
@@ -36,6 +37,9 @@ private:
 
     M::Containers::Pointer<M::Text::Renderer2D> _textRenderer;
     M::Shaders::Vector2D _textShader;
+
+    std::vector<std::string> _messages;
+    std::string _lastRendered;
 };
 
 #endif // MALLARD_DEBUG_H

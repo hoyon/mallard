@@ -150,8 +150,6 @@ void Camera::tickPosition()
     decelerateElement(_velocity.x());
     decelerateElement(_velocity.y());
 
-    Debug::get().putMessage(M::Utility::formatString("{}", _velocity.x()));
-
     // clamp velocity
     _velocity.x() = M::Math::clamp(_velocity.x(), -MaxVelocity, MaxVelocity);
     _velocity.y() = M::Math::clamp(_velocity.y(), -MaxVelocity, MaxVelocity);
@@ -195,6 +193,10 @@ void Camera::tick()
 {
     tickPosition();
     tickAngle();
+
+    auto trans = this->transformation().translation();
+
+    Debug::get().addMessage(M::Utility::formatString("({:.6f}, {:.6f}, {:.6f})", trans.x(), trans.y(), trans.z()));
 }
 
 void Camera::draw(M::SceneGraph::DrawableGroup3D& drawables)

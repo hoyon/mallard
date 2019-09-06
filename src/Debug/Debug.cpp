@@ -1,4 +1,6 @@
 #include "Debug.h"
+
+#include <Corrade/Utility/String.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
 #include <Magnum/Text/Alignment.h>
 #include <Magnum/Text/Renderer.h>
@@ -30,7 +32,7 @@ Debug::Debug()
 
     _textRenderer.reset(new M::Text::Renderer2D(*_font, _fontCache, 0.05f, M::Text::Alignment::TopRight));
 
-    _textRenderer->reserve(40, M::GL::BufferUsage::DynamicDraw, M::GL::BufferUsage::StaticDraw);
+    _textRenderer->reserve(100, M::GL::BufferUsage::DynamicDraw, M::GL::BufferUsage::StaticDraw);
 
     auto projection =
         M::Matrix3::scaling(M::Vector2::yScale(M::Vector2(M::GL::defaultFramebuffer.viewport().size()).aspectRatio()));
@@ -43,10 +45,18 @@ Debug::Debug()
 
 void Debug::draw()
 {
+    auto combined = M::Utility::String::join(_messages, '\n');
+
+    if (_lastRendered != combined) {
+        _textRenderer->render(combined);
+        _lastRendered = combined;
+    }
+    _messages.clear();
+
     _textRenderer->mesh().draw(_textShader);
 }
 
-void Debug::putMessage(const std::string& message)
+void Debug::addMessage(const std::string& message)
 {
-    _textRenderer->render(message);
+    _messages.push_back(message);
 }
