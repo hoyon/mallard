@@ -12,6 +12,7 @@
 #include "Cube.h"
 #include "Debug/Debug.h"
 #include "Ground.h"
+#include "Input.h"
 #include "Scene.h"
 
 namespace M = Magnum;
@@ -92,15 +93,14 @@ void MallardApplication::keyPressEvent(KeyEvent& event)
     }
 
     if (!event.isRepeated()) {
-        _camera->keyPressed(event.key());
+        Input::get().setKeyPressed(event.key());
     }
-
     event.setAccepted();
 }
 
 void MallardApplication::keyReleaseEvent(KeyEvent& event)
 {
-    _camera->keyReleased(event.key());
+    Input::get().setKeyReleased(event.key());
 
     event.setAccepted();
 }

@@ -38,9 +38,10 @@ find_package(EnTT CONFIG REQUIRED)
 set_directory_properties(PROPERTIES CORRADE_USE_PEDANTIC_FLAGS ON)
 
 add_executable(mallard
+  src/Camera.cpp
   src/Main.cpp
   src/Ground.cpp
-  src/Camera.cpp
+  src/Input.cpp
   src/Debug/Debug.cpp
   )
 

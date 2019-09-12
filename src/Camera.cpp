@@ -1,7 +1,10 @@
 #include "Camera.h"
-#include "Debug/Debug.h"
+
 #include <Corrade/Utility/Format.h>
 #include <Magnum/GL/DefaultFramebuffer.h>
+
+#include "Debug/Debug.h"
+#include "Input.h"
 
 const float CameraAcceleration = 0.3f;
 const float CameraDeceleration = 0.1f;
@@ -22,102 +25,6 @@ Camera::Camera(Object3D* object)
         .setViewport(M::GL::defaultFramebuffer.viewport().size());
 }
 
-void Camera::keyPressed(M::Platform::Sdl2Application::KeyEvent::Key key)
-{
-    switch (key) {
-        case M::Platform::Sdl2Application::KeyEvent::Key::W: {
-            _upPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::S: {
-            _downPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::D: {
-            _leftPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::A: {
-            _rightPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Up: {
-            _angleUpPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Down: {
-            _angleDownPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Left: {
-            _angleLeftPressed = true;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Right: {
-            _angleRightPressed = true;
-            break;
-        }
-
-        default:
-            break;
-    }
-}
-
-void Camera::keyReleased(M::Platform::Sdl2Application::KeyEvent::Key key)
-{
-    switch (key) {
-        case M::Platform::Sdl2Application::KeyEvent::Key::W: {
-            _upPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::S: {
-            _downPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::D: {
-            _leftPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::A: {
-            _rightPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Up: {
-            _angleUpPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Down: {
-            _angleDownPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Left: {
-            _angleLeftPressed = false;
-            break;
-        }
-
-        case M::Platform::Sdl2Application::KeyEvent::Key::Right: {
-            _angleRightPressed = false;
-            break;
-        }
-
-        default:
-            break;
-    }
-}
-
 static void decelerateElement(float& elem)
 {
     if (elem > 0) {
@@ -131,19 +38,19 @@ static void decelerateElement(float& elem)
 
 void Camera::tickPosition()
 {
-    if (_upPressed) {
+    if (Input::get().isKeyPressed(Input::Key::W)) {
         _velocity.y() += CameraAcceleration;
     }
 
-    if (_downPressed) {
+    if (Input::get().isKeyPressed(Input::Key::S)) {
         _velocity.y() -= CameraAcceleration;
     }
 
-    if (_leftPressed) {
+    if (Input::get().isKeyPressed(Input::Key::D)) {
         _velocity.x() += CameraAcceleration;
     }
 
-    if (_rightPressed) {
+    if (Input::get().isKeyPressed(Input::Key::A)) {
         _velocity.x() -= CameraAcceleration;
     }
 
@@ -170,21 +77,21 @@ void Camera::tickAngle()
 {
     using namespace M::Math::Literals;
 
-    if (_angleUpPressed) {
+    if (Input::get().isKeyPressed(Input::Key::Up)) {
         this->rotateXLocal(1.0_degf);
         this->translate(M::Vector3::zAxis(-0.5f));
     }
 
-    if (_angleDownPressed) {
+    if (Input::get().isKeyPressed(Input::Key::Down)) {
         this->rotateXLocal(-1.0_degf);
         this->translate(M::Vector3::zAxis(0.5f));
     }
 
-    if (_angleLeftPressed) {
+    if (Input::get().isKeyPressed(Input::Key::Left)) {
         this->rotateZLocal(-1.0_degf);
     }
 
-    if (_angleRightPressed) {
+    if (Input::get().isKeyPressed(Input::Key::Right)) {
         this->rotateZLocal(1.0_degf);
     }
 }

@@ -34,8 +34,7 @@ Debug::Debug()
 
     _textRenderer->reserve(100, M::GL::BufferUsage::DynamicDraw, M::GL::BufferUsage::StaticDraw);
 
-    auto projection =
-        M::Matrix3::scaling(M::Vector2::yScale(M::Vector2(M::GL::defaultFramebuffer.viewport().size()).aspectRatio()));
+    auto projection = M::Matrix3::scaling(M::Vector2::yScale(M::Vector2(M::GL::defaultFramebuffer.viewport().size()).aspectRatio()));
 
     _textShader
         .setTransformationProjectionMatrix(projection * M::Matrix3::translation(1.0f / projection.rotationScaling().diagonal()))
