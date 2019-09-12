@@ -83,13 +83,8 @@ void MallardApplication::drawEvent()
 
 void MallardApplication::keyPressEvent(KeyEvent& event)
 {
-    switch (event.key()) {
-        case KeyEvent::Key::Q:
-            exit();
-            break;
-
-        default:
-            break;
+    if (event.key() == KeyEvent::Key::Q) {
+        exit();
     }
 
     if (!event.isRepeated()) {
