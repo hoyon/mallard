@@ -36,6 +36,18 @@ static void decelerateElement(float& elem)
     }
 }
 
+void Camera::translateCamera(const M::Vector3& translation)
+{
+    auto transformation = this->transformation();
+    auto& currentTranslation = transformation.translation();
+
+    currentTranslation.x() = M::Math::clamp(currentTranslation.x() + translation.x(), -MaxPosition, MaxPosition);
+    currentTranslation.y() = M::Math::clamp(currentTranslation.y() + translation.y(), -MaxPosition, MaxPosition);
+    currentTranslation.z() = M::Math::clamp(currentTranslation.z() + translation.z(), -MaxPosition, MaxPosition);
+
+    this->setTransformation(transformation);
+}
+
 void Camera::tickPosition()
 {
     if (Input::get().isKeyPressed(Input::Key::W)) {
@@ -61,39 +73,38 @@ void Camera::tickPosition()
     _velocity.x() = M::Math::clamp(_velocity.x(), -MaxVelocity, MaxVelocity);
     _velocity.y() = M::Math::clamp(_velocity.y(), -MaxVelocity, MaxVelocity);
 
-    this->translateLocal(_velocity);
-
-    // clamp position
-    auto transformation = this->transformation();
-    auto& translation = transformation.translation();
-
-    translation.x() = M::Math::clamp(translation.x(), -MaxPosition, MaxPosition);
-    translation.y() = M::Math::clamp(translation.y(), -MaxPosition, MaxPosition);
-
-    this->setTransformation(transformation);
+    this->translateCamera(_velocity);
 }
 
 void Camera::tickAngle()
 {
     using namespace M::Math::Literals;
 
+    auto rotationX = 0._degf;
+    auto rotationZ = 0._degf;
+    M::Vector3 translation;
+
     if (Input::get().isKeyPressed(Input::Key::Up)) {
-        this->rotateXLocal(1.0_degf);
-        this->translate(M::Vector3::zAxis(-0.5f));
+        rotationX = 1.0_degf;
+        translation = M::Vector3::zAxis(-0.5f);
     }
 
     if (Input::get().isKeyPressed(Input::Key::Down)) {
-        this->rotateXLocal(-1.0_degf);
-        this->translate(M::Vector3::zAxis(0.5f));
+        rotationX = -1.0_degf;
+        translation = M::Vector3::zAxis(0.5f);
     }
 
     if (Input::get().isKeyPressed(Input::Key::Left)) {
-        this->rotateZLocal(-1.0_degf);
+        rotationZ = -1.0_degf;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Right)) {
-        this->rotateZLocal(1.0_degf);
+        rotationZ = 1.0_degf;
     }
+
+    this->rotateXLocal(rotationX);
+    this->rotateZLocal(rotationZ);
+    this->translateCamera(translation);
 }
 
 void Camera::tick()

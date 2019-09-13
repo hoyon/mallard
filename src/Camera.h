@@ -19,6 +19,7 @@ public:
 private:
     void tickPosition();
     void tickAngle();
+    void translateCamera(const M::Vector3& translation);
 
     M::SceneGraph::Camera3D* _cameraFeature;
 
