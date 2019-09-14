@@ -73,9 +73,9 @@ void Camera::tickPosition()
 
     auto translation = M::Matrix4::translation(_velocity);
 
-    auto x = M::Matrix4::rotationX(M::Deg(_rotation.x()));
-    auto y = M::Matrix4::rotationY(M::Deg(_rotation.y()));
-    auto z = M::Matrix4::rotationZ(M::Deg(_rotation.z()));
+    auto x = M::Matrix4::rotationX(_rotation.x());
+    auto y = M::Matrix4::rotationY(_rotation.y());
+    auto z = M::Matrix4::rotationZ(_rotation.z());
 
     M::Matrix4 rotation = z * x * y;
 
@@ -87,19 +87,19 @@ void Camera::tickAngle()
     using namespace M::Math::Literals;
 
     if (Input::get().isKeyPressed(Input::Key::Up)) {
-        _rotation.x() += 1;
+        _rotation.x() += 1.0_degf;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Down)) {
-        _rotation.x() -= 1;
+        _rotation.x() -= 1.0_degf;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Left)) {
-        _rotation.z() += 1;
+        _rotation.z() += 1.0_degf;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Right)) {
-        _rotation.z() -= 1;
+        _rotation.z() -= 1.0_degf;
     }
 }
 
@@ -108,9 +108,9 @@ void Camera::tick()
     tickAngle();
     tickPosition();
 
-    auto x = M::Matrix4::rotationX(M::Deg(_rotation.x()));
-    auto y = M::Matrix4::rotationY(M::Deg(_rotation.y()));
-    auto z = M::Matrix4::rotationZ(M::Deg(_rotation.z()));
+    auto x = M::Matrix4::rotationX(_rotation.x());
+    auto y = M::Matrix4::rotationY(_rotation.y());
+    auto z = M::Matrix4::rotationZ(_rotation.z());
 
     M::Matrix4 rotation = z * x * y;
     M::Matrix4 translation = M::Matrix4::translation(_position);
@@ -120,7 +120,10 @@ void Camera::tick()
     this->setTransformation(transformation);
 
     Debug::get().addMessage(M::Utility::formatString("({:.3f}, {:.3f}, {:.3f})", _position.x(), _position.y(), _position.z()));
-    Debug::get().addMessage(M::Utility::formatString("({:.3f}, {:.3f}, {:.3f})", _rotation.x(), _rotation.y(), _rotation.z()));
+    Debug::get().addMessage(M::Utility::formatString("({:.2f}, {:.2f}, {:.2f})",
+                                                     static_cast<float>(_rotation.x()),
+                                                     static_cast<float>(_rotation.y()),
+                                                     static_cast<float>(_rotation.z())));
 }
 
 void Camera::draw(M::SceneGraph::DrawableGroup3D& drawables)

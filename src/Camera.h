@@ -24,7 +24,7 @@ private:
 
     M::Vector3 _velocity;
     M::Vector3 _position;
-    M::Vector3 _rotation;
+    M::Math::Vector3<M::Deg> _rotation;
 };
 
 #endif // MALLARD_CAMERA_H
