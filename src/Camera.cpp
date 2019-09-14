@@ -39,11 +39,11 @@ static void decelerateElement(float& elem)
 void Camera::tickPosition()
 {
     if (Input::get().isKeyPressed(Input::Key::W)) {
-        _velocity.y() += CameraAcceleration;
+        _velocity.z() -= CameraAcceleration;
     }
 
     if (Input::get().isKeyPressed(Input::Key::S)) {
-        _velocity.y() -= CameraAcceleration;
+        _velocity.z() += CameraAcceleration;
     }
 
     if (Input::get().isKeyPressed(Input::Key::D)) {
@@ -55,11 +55,11 @@ void Camera::tickPosition()
     }
 
     if (Input::get().isKeyPressed(Input::Key::Space)) {
-        _velocity.z() += CameraAcceleration;
+        _velocity.y() += CameraAcceleration;
     }
 
     if (Input::get().isKeyPressed(Input::Key::LeftShift)) {
-        _velocity.z() -= CameraAcceleration;
+        _velocity.y() -= CameraAcceleration;
     }
 
     decelerateElement(_velocity.x());
@@ -71,7 +71,15 @@ void Camera::tickPosition()
     _velocity.y() = M::Math::clamp(_velocity.y(), -MaxVelocity, MaxVelocity);
     _velocity.z() = M::Math::clamp(_velocity.z(), -MaxVelocity, MaxVelocity);
 
-    _position += _velocity;
+    auto translation = M::Matrix4::translation(_velocity);
+
+    auto x = M::Matrix4::rotationX(M::Deg(_rotation.x()));
+    auto y = M::Matrix4::rotationY(M::Deg(_rotation.y()));
+    auto z = M::Matrix4::rotationZ(M::Deg(_rotation.z()));
+
+    M::Matrix4 rotation = z * x * y;
+
+    _position += (rotation * translation).translation();
 }
 
 void Camera::tickAngle()
@@ -87,32 +95,32 @@ void Camera::tickAngle()
     }
 
     if (Input::get().isKeyPressed(Input::Key::Left)) {
-        _rotation.z() -= 1;
+        _rotation.z() += 1;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Right)) {
-        _rotation.z() += 1;
+        _rotation.z() -= 1;
     }
 }
 
 void Camera::tick()
 {
-    tickPosition();
     tickAngle();
+    tickPosition();
 
     auto x = M::Matrix4::rotationX(M::Deg(_rotation.x()));
     auto y = M::Matrix4::rotationY(M::Deg(_rotation.y()));
     auto z = M::Matrix4::rotationZ(M::Deg(_rotation.z()));
 
+    M::Matrix4 rotation = z * x * y;
     M::Matrix4 translation = M::Matrix4::translation(_position);
 
-    auto transformation = z * x * y * translation;
+    auto transformation = translation * rotation;
 
     this->setTransformation(transformation);
 
-    auto trans = this->transformation().translation();
-
-    Debug::get().addMessage(M::Utility::formatString("({:.6f}, {:.6f}, {:.6f})", trans.x(), trans.y(), trans.z()));
+    Debug::get().addMessage(M::Utility::formatString("({:.3f}, {:.3f}, {:.3f})", _position.x(), _position.y(), _position.z()));
+    Debug::get().addMessage(M::Utility::formatString("({:.3f}, {:.3f}, {:.3f})", _rotation.x(), _rotation.y(), _rotation.z()));
 }
 
 void Camera::draw(M::SceneGraph::DrawableGroup3D& drawables)
