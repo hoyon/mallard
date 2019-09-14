@@ -19,11 +19,12 @@ public:
 private:
     void tickPosition();
     void tickAngle();
-    void translateCamera(const M::Vector3& translation);
 
     M::SceneGraph::Camera3D* _cameraFeature;
 
     M::Vector3 _velocity;
+    M::Vector3 _position;
+    M::Vector3 _rotation;
 };
 
 #endif // MALLARD_CAMERA_H

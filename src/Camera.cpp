@@ -9,14 +9,14 @@
 const float CameraAcceleration = 0.3f;
 const float CameraDeceleration = 0.1f;
 const float MaxVelocity = 1.f;
-const float MaxPosition = 100.f;
 
 Camera::Camera(Object3D* object)
     : Object3D(object)
+    , _position(0, 0, 50)
 {
     using namespace M::Math::Literals;
 
-    this->translate(M::Vector3::zAxis(50.0f));
+    this->translate(_position);
 
     _cameraFeature = &addFeature<M::SceneGraph::Camera3D>();
 
@@ -34,18 +34,6 @@ static void decelerateElement(float& elem)
         elem += CameraDeceleration;
         elem = M::Math::min(elem, 0.f);
     }
-}
-
-void Camera::translateCamera(const M::Vector3& translation)
-{
-    auto transformation = this->transformation();
-    auto& currentTranslation = transformation.translation();
-
-    currentTranslation.x() = M::Math::clamp(currentTranslation.x() + translation.x(), -MaxPosition, MaxPosition);
-    currentTranslation.y() = M::Math::clamp(currentTranslation.y() + translation.y(), -MaxPosition, MaxPosition);
-    currentTranslation.z() = M::Math::clamp(currentTranslation.z() + translation.z(), -MaxPosition, MaxPosition);
-
-    this->setTransformation(transformation);
 }
 
 void Camera::tickPosition()
@@ -66,51 +54,61 @@ void Camera::tickPosition()
         _velocity.x() -= CameraAcceleration;
     }
 
+    if (Input::get().isKeyPressed(Input::Key::Space)) {
+        _velocity.z() += CameraAcceleration;
+    }
+
+    if (Input::get().isKeyPressed(Input::Key::LeftShift)) {
+        _velocity.z() -= CameraAcceleration;
+    }
+
     decelerateElement(_velocity.x());
     decelerateElement(_velocity.y());
+    decelerateElement(_velocity.z());
 
     // clamp velocity
     _velocity.x() = M::Math::clamp(_velocity.x(), -MaxVelocity, MaxVelocity);
     _velocity.y() = M::Math::clamp(_velocity.y(), -MaxVelocity, MaxVelocity);
+    _velocity.z() = M::Math::clamp(_velocity.z(), -MaxVelocity, MaxVelocity);
 
-    this->translateCamera(_velocity);
+    _position += _velocity;
 }
 
 void Camera::tickAngle()
 {
     using namespace M::Math::Literals;
 
-    auto rotationX = 0._degf;
-    auto rotationZ = 0._degf;
-    M::Vector3 translation;
-
     if (Input::get().isKeyPressed(Input::Key::Up)) {
-        rotationX = 1.0_degf;
-        translation = M::Vector3::zAxis(-0.5f);
+        _rotation.x() += 1;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Down)) {
-        rotationX = -1.0_degf;
-        translation = M::Vector3::zAxis(0.5f);
+        _rotation.x() -= 1;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Left)) {
-        rotationZ = -1.0_degf;
+        _rotation.z() -= 1;
     }
 
     if (Input::get().isKeyPressed(Input::Key::Right)) {
-        rotationZ = 1.0_degf;
+        _rotation.z() += 1;
     }
-
-    this->rotateXLocal(rotationX);
-    this->rotateZLocal(rotationZ);
-    this->translateCamera(translation);
 }
 
 void Camera::tick()
 {
     tickPosition();
     tickAngle();
+
+    auto x = M::Matrix4::rotationX(M::Deg(_rotation.x()));
+    auto y = M::Matrix4::rotationY(M::Deg(_rotation.y()));
+    auto z = M::Matrix4::rotationZ(M::Deg(_rotation.z()));
+
+    M::Matrix4 translation = M::Matrix4::translation(_position);
+
+    auto transformation = z * x * y * translation;
+
+    this->setTransformation(transformation);
 
     auto trans = this->transformation().translation();
 
